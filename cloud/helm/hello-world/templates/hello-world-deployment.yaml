@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.appPrimary.name }}-deployment
+  labels:
+    app: {{ .Values.components.appPrimary.name }}
+    "aaa": "123"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.components.appPrimary.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.components.appPrimary.name }}
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      containers:
+        - name: {{ .Values.components.appPrimary.name }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.tag}}"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              add: []
+              drop: ["NET_RAW"]
+            runAsUser: 1001
+            runAsGroup: 1001
+          resources:
+            limits:
+              cpu: {{ .Values.resource.appPrimary.cpu.limit }}
+              memory: {{ .Values.resource.appPrimary.memory.limit }}
+            requests:
+              cpu: {{ .Values.resource.appPrimary.cpu.request }}
+              memory: {{ .Values.resource.appPrimary.memory.request }}
+          env:
+            - name: JAVA_OPTION
+              value: "-Xms{{ .Values.resource.appPrimary.memory.heapSize }} -Xmx{{ .Values.resource.appPrimary.memory.heapSize }}
+              -Xss256k -XX:+PrintGCDetails
+              -XX:+PrintCommandLineFlags
+              "
+            - name: JAVA_MAIN_CLASS
+              value: "{{ .Values.components.appPrimary.mainClass }}"
+          ports:
+            - containerPort: {{ .Values.service.appPrimary.ports.rest.port }}
+              name: rest

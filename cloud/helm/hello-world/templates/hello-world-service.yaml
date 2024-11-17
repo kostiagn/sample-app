@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.appPrimary.name }}-service
+spec:
+  selector:
+    app: {{ .Values.components.appPrimary.name }}
+  type: {{ .Values.service.type }}
+  ports:
+    {{- range $k, $v := .Values.service.appPrimary.ports }}
+    - name: {{ $k }}
+      port: {{ $v.port }}
+      targetPort: {{ $v.targetPort }}
+    {{ end }}

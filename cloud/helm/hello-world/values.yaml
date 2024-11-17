@@ -1,0 +1,27 @@
+components:
+  appPrimary:
+    name: hello-world
+    mainClass: "com.kostiagn.sample.app.launchers.HelloWorldLauncher"
+
+resource:
+  appPrimary:
+    memory:
+      request: 500Mi
+      limit: 500Mi
+      heapSize: 256m
+    cpu:
+      request: 100m
+      limit: 1000m
+service:
+  type: ClusterIP
+  appPrimary:
+    ports:
+      rest:
+        targetPort: 8090
+        port: 8090
+
+image:
+  registry: 172.19.208.1:5000/hello-world
+  name: hello-world-app
+  pullPolicy: IfNotPresent
+  tag: "1.0-SNAPSHOT"

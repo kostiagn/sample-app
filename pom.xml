@@ -12,5 +12,39 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <from>
+                        <image>openjdk:11.0.11-jre-slim</image>
+                    </from>
+                    <to>
+                        <image>
+                            localhost:5000/hello-world/hello-world-app:${version}
+                        </image>
+                    </to>
+                    <container>
+                        <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        <entrypoint>
+                            <arg>/bin/sh</arg>
+                            <arg>-c</arg>
+                            <arg>java $JAVA_OPTIONS -cp @/app/jib-classpath-file "$JAVA_MAIN_CLASS" $JAVA_ARGS</arg>
+                        </entrypoint>
+                    </container>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

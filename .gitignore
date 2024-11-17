@@ -1,8 +1,11 @@
 **/data
+**/target
 **/bin
 **/generated
 **/local
 **/.project
 **/*.iml
 **/.idea
+**/.helm
+
 pom.xml.versionsBackup
